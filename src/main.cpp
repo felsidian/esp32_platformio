@@ -72,7 +72,7 @@ void writeFile(fs::FS &fs, const char * path, const char * message){
 // Initialize WiFi
 bool initWiFi() {
   if(ssid==""){
-    Serial.println("Undefined SSID or IP address.");
+    Serial.println("Undefined SSID");
     return false;
   }
 
@@ -114,25 +114,7 @@ void setup() {
   Serial.println(ssid);
   Serial.println(password);
 
-  if(initWiFi()) {
-    // Route for root / web page
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-      request->send(SPIFFS, "/index.html", "text/html", false, processor);
-    });
-    server.serveStatic("/", SPIFFS, "/");
-    
-    // Route to set GPIO state to HIGH
-    server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request) {
-      request->send(SPIFFS, "/index.html", "text/html", false, processor);
-    });
-
-    // Route to set GPIO state to LOW
-    server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request) {
-      request->send(SPIFFS, "/index.html", "text/html", false, processor);
-    });
-    server.begin();
-  }
-  else {
+  if(!initWiFi()) {
     // Connect to Wi-Fi network with SSID and password
     Serial.println("Setting AP (Access Point)");
     // NULL sets an open Access Point
@@ -144,7 +126,7 @@ void setup() {
 
     // Web Server Root URL
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-      request->send(SPIFFS, "/wifimanager.html", "text/html");
+      request->send(SPIFFS, "/index.html", "text/html");
     });
     
     server.serveStatic("/", SPIFFS, "/");

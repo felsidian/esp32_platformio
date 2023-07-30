@@ -1,0 +1,13 @@
+{
+  "name": "wifi_manager",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npx tailwindcss -i ./base.css -o ./src/styles.css --minify",
+    "dev": "npx tailwindcss -i ./base.css -o ./src/styles.css --watch"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.4",
+    "tailwindcss": "^3.3.3"
+  }
+}
