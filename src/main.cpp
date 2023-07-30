@@ -15,18 +15,13 @@
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 
-// Search for parameter in HTTP POST request
-const char* PARAM_INPUT_1 = "ssid";
-const char* PARAM_INPUT_2 = "pass";
-
-
 //Variables to save values from HTML form
 String ssid;
-String pass;
+String password;
 
 // File paths to save input values permanently
 const char* ssidPath = "/ssid.txt";
-const char* passPath = "/pass.txt";
+const char* passwordPath = "/password.txt";
 
 // Timer variables
 unsigned long previousMillis = 0;
@@ -82,7 +77,7 @@ bool initWiFi() {
   }
 
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid.c_str(), pass.c_str());
+  WiFi.begin(ssid.c_str(), password.c_str());
   Serial.println("Connecting to WiFi...");
 
   unsigned long currentMillis = millis();
@@ -115,9 +110,9 @@ void setup() {
   
   // Load values saved in SPIFFS
   ssid = readFile(SPIFFS, ssidPath);
-  pass = readFile(SPIFFS, passPath);
+  password = readFile(SPIFFS, passwordPath);
   Serial.println(ssid);
-  Serial.println(pass);
+  Serial.println(password);
 
   if(initWiFi()) {
     // Route for root / web page
@@ -160,20 +155,18 @@ void setup() {
         AsyncWebParameter* p = request->getParam(i);
         if(p->isPost()){
           // HTTP POST ssid value
-          if (p->name() == PARAM_INPUT_1) {
+          if (p->name() == "ssid") {
             ssid = p->value().c_str();
             Serial.print("SSID set to: ");
             Serial.println(ssid);
             // Write file to save value
             writeFile(SPIFFS, ssidPath, ssid.c_str());
-          }
-          // HTTP POST pass value
-          if (p->name() == PARAM_INPUT_2) {
-            pass = p->value().c_str();
+          } else if (p->name() == "password") {
+            password = p->value().c_str();
             Serial.print("Password set to: ");
-            Serial.println(pass);
+            Serial.println(password);
             // Write file to save value
-            writeFile(SPIFFS, passPath, pass.c_str());
+            writeFile(SPIFFS, passwordPath, password.c_str());
           }
         }
       }
